@@ -1,33 +1,35 @@
 import React, { useEffect } from 'react';
 import {
+  BrowserRouter as Router,
   Routes,
-  Route,
-  useLocation
+  Route
 } from 'react-router-dom';
 
 import './css/style.css';
 
 import './charts/ChartjsConfig';
-
+import "@progress/kendo-theme-default/dist/all.css";
 // Import pages
 import Dashboard from './pages/Dashboard';
-
+import { Login, OrderList } from './pages';
+import { useStateContext } from './context/ContextProvider';
+import Logout from './partials/Logout/Logout';
 function App() {
-
-  const location = useLocation();
-
-  useEffect(() => {
-    document.querySelector('html').style.scrollBehavior = 'auto'
-    window.scroll({ top: 0 })
-    document.querySelector('html').style.scrollBehavior = ''
-  }, [location.pathname]); // triggered on route change
-
+  const { userData } = useStateContext();
   return (
-    <>
-      <Routes>
-        <Route exact path="/" element={<Dashboard />} />
-      </Routes>
-    </>
+    <Router>
+      {localStorage.getItem("userData") == null ? (
+        <Login />
+      ) : (
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/home" element={<Dashboard />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/logout" element={<Logout />} />
+          <Route path="/order-customer" element={<OrderList />} />
+        </Routes>
+      )}
+    </Router>
   );
 }
 
